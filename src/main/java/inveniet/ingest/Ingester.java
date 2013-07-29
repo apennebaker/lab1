@@ -3,16 +3,18 @@ package inveniet.ingest;
 import inveniet.index.MemoryIndex;
 
 import java.io.IOException;
-
 import java.io.File;
+import java.util.Scanner;
 
 /**
  * This class will take care of ingesting files into the index.
  */
 public class Ingester
 {
-  public Ingester()
-  {
+  public MemoryIndex index;
+
+  public Ingester() {
+    index = MemoryIndex.getInstance();
   }
   
     /**
@@ -53,12 +55,23 @@ public class Ingester
                normalized
          */
 
-    System.out.println(filename);
+    System.out.println("Indexing " + filename + "...");
 
-    File f = new File(filename);
+    Scanner scanner = new Scanner(new File(filename));
 
-    // ...
+    while (scanner.hasNextLine()) {
+        String line = scanner.nextLine();
 
+        String[] words = line.split("\\s+");
+
+        for (String word:words) {
+          String normalized = normalize(word);
+          
+          index.addTerm(normalized, filename);
+        }
+    }
+
+    scanner.close();
   }   
   
   /**

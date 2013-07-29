@@ -13,6 +13,10 @@ public class IngesterTest {
 
     i.ingestDirectory("authors");
 
+    Set<String> docs = i.index.getInstance().lookupTerm("macbeth");
+
+    System.out.println("macbeth docs:" + docs);
+
     // ...
   }
 }
