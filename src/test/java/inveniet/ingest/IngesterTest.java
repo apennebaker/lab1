@@ -13,10 +13,8 @@ public class IngesterTest {
 
     i.ingestDirectory("authors");
 
-    Set<String> docs = i.index.getInstance().lookupTerm("macbeth");
+    Set<String> docs = i.index.lookupTerm("macbeth");
 
-    System.out.println("macbeth docs:" + docs);
-
-    // ...
+    Assert.assertEquals(docs.size(), 2);
   }
 }

@@ -55,7 +55,7 @@ public class Ingester
                normalized
          */
 
-    System.out.println("Indexing " + filename + "...");
+    // System.out.println("Indexing " + filename + "...");
 
     Scanner scanner = new Scanner(new File(filename));
 
