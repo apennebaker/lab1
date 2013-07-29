@@ -31,11 +31,13 @@ public class Ingester
     File[] files = dir.listFiles();
 
     for (File f: files) {
-      System.out.println(f);
-
-      // ...
+      if (f.isDirectory()) {
+        ingestDirectory(f.getAbsolutePath());
+      }
+      else {
+        ingestFile(f.getAbsolutePath());
+      }
     }
-
   }
 
   /**
@@ -50,6 +52,13 @@ public class Ingester
      TODO: Add all the terms in the file to the index, make sure that terms have been 
                normalized
          */
+
+    System.out.println(filename);
+
+    File f = new File(filename);
+
+    // ...
+
   }   
   
   /**
