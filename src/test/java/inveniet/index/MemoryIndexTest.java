@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.After;
 
 public class MemoryIndexTest
 {
@@ -27,5 +28,10 @@ public class MemoryIndexTest
         {
             Assert.assertTrue(docs.contains(docId));
         }
+  }
+
+  @After
+  public void cleanIndex() {
+    MemoryIndex.getInstance().clear();
   }
 }

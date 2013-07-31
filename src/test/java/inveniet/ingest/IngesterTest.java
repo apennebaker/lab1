@@ -23,16 +23,12 @@ public class IngesterTest {
       uniqueDocs.addAll(results);
     }
 
-    for (String doc:uniqueDocs) {
-      System.out.println(doc);
-    }
-
     // Unique docs
     // find authors/ -type f | wc -l
     Assert.assertEquals(uniqueDocs.size(), 94);
 
     // Unique words in authors/
-    Assert.assertEquals(map.size(), 105243);
+    Assert.assertEquals(map.size(), 105239);
 
     Set<String> macbethDocs = i.index.lookupTerm("macbeth");
     Assert.assertEquals(macbethDocs.size(), 2);
