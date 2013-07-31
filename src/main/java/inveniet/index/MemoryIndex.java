@@ -7,7 +7,7 @@ import java.util.Set;
 
 public class MemoryIndex
 {
-    private SetMultimap<String, String> index;
+    public SetMultimap<String, String> index;
     
     /**
      * Get a instance of the database

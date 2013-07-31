@@ -2,6 +2,9 @@ package inveniet.ingest;
 
 import com.google.common.collect.ImmutableSet;
 import java.util.Set;
+import java.util.Map;
+import java.util.Collection;
+import java.util.HashSet;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -12,9 +15,26 @@ public class IngesterTest {
     Ingester i = new Ingester();
 
     i.ingestDirectory("authors");
+    Map<String,Collection<String>> map = i.index.index.asMap();
 
-    Set<String> docs = i.index.lookupTerm("macbeth");
+    Collection<Collection<String>> docs = map.values();
+    HashSet<String> uniqueDocs = new HashSet();
+    for (Collection<String> results:docs) {
+      uniqueDocs.addAll(results);
+    }
 
-    Assert.assertEquals(docs.size(), 2);
+    for (String doc:uniqueDocs) {
+      System.out.println(doc);
+    }
+
+    // Unique docs
+    // find authors/ -type f | wc -l
+    Assert.assertEquals(uniqueDocs.size(), 94);
+
+    // Unique words in authors/
+    Assert.assertEquals(map.size(), 105243);
+
+    Set<String> macbethDocs = i.index.lookupTerm("macbeth");
+    Assert.assertEquals(macbethDocs.size(), 2);
   }
 }
