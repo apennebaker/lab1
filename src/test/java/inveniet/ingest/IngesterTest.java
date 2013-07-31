@@ -30,6 +30,8 @@ public class IngesterTest {
     // Unique words in authors/
     Assert.assertEquals(map.size(), 105239);
 
+    // Results for "macbeth"
+    // ack -li macbeth authors/ | wc -l
     Set<String> macbethDocs = i.index.lookupTerm("macbeth");
     Assert.assertEquals(macbethDocs.size(), 2);
   }
