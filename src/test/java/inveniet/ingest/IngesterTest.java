@@ -27,7 +27,8 @@ public class IngesterTest {
     // find authors/ -type f | wc -l
     Assert.assertEquals(uniqueDocs.size(), 94);
 
-    // Unique words in authors/
+    // Unique words
+    // find authors/ -type f | xargs cat | LC_ALL='C' tr '[:space:]' '\n' | LC_ALL='C' sort -uf | wc -l
     Assert.assertEquals(map.size(), 105239);
 
     // Results for "macbeth"
