@@ -2,7 +2,7 @@ package inveniet.query;
 
 public class Query
 {
-	/**
+  /**
      * This will query the index and return the documents that match the query
      *
      * Query String will have foo AND bar OR biz NOT baz
@@ -21,9 +21,61 @@ public class Query
      *@return a iterable of document ids which match the query, should return an empty iterable if
      *        nothing is found.
      */
-	public Iterable<String> query(String query)
-	{
-		// TODO: Implement query logic
-		return null; // TODO: Make this return something proper 
-	}
+
+  private interface Expression {
+    public Iterable<String> reduce();
+  }
+
+
+  // "foo"
+  private class Term implements Expression {
+    private String term;
+
+    public Term(String s) {
+      term = s;
+    }
+
+    public Iterable<String> reduce() {
+      // ...
+    }
+  }
+
+  // ... AND ...
+  private class Intersection implements Expression {
+    private Expression operandX, operandY;
+
+    public Intersection(Expression e1, Expression e2) {
+      operandX = e1;
+      operandY = e2;
+    }
+
+    public Iterable<String> reduce() {
+      Iterable<String> x = operandX.reduce();
+      Iterable<String> y = operandY.reduce();
+
+      // ...
+    }
+  }
+
+  // ... OR ...
+  private class Union implements Expression {
+    private Expression operandX, operandY;
+
+    public Union(Expression e1, Expression e2) {
+      operandX = e1;
+      operandY = e2;
+    }
+
+    public Iterable<String> reduce() {
+      Iterable<String> x = operandX.reduce();
+      Iterable<String> y = operandY.reduce();
+    }
+
+  // ...
+
+  public Iterable<String> query(String query)
+  {
+    // TODO: Implement query logic
+    return null; // TODO: Make this return something proper 
+  }
 }
