@@ -1,0 +1,31 @@
+<h2>Overview<h2>
+We are going to implement a search engine that answers basic queries on a set of text files.
+
+<h2>Whats in our corpus?</h2>
+Our corpus (document collection) is defined by the complete works of William Shakespere and Sherlock holmes.
+
+<h2>Indexing 101</h2>
+To index our documents we will be building an inverted index.
+
+An inverted index is a data structure that we build while parsing the documents that we are going to answer the search queries on. Given a query, we use the index to return the list of documents relevant for this query. The inverted index contains mappings from terms (words) to the documents that those terms appear in. Each vocabulary term is a key in the index whose value is its postings list. A term’s postings list is the list of documents that the term appears in. To illustrate with an example, if we have the following documents:
+Document 1: Information Retrieval and Web Search
+Document 2: Search Engine Ranking
+Document 3: Web Search Course
+
+Then the postings list of the term ‘web’ would be the list [1, 3], meaning the term ‘web’ appears in documents with IDs 1 and 3. Similarly the postings list of the term ‘search’ would be [1, 2, 3], and for the term ‘course’ the postings list would be [3]. We may want to keep additional information in the index such as the number of occurrences of the term in the whole collection (its term frequency), or the number of different documents that the term appears in (its document frequency), the positions of the term’s occurrences within a document etc. The amount of information we keep in our index will grow as we add more functionality to our search engine.
+
+<h2>Querying</h2>
+So, what types of queries our search engine will answer? We will answer the types of queries that we use while doing search every day. Namely:
+1) One Word Queries: Queries that consist of a single word. Such as movie, or hotel.
+2) Boolean Queries: Queries that have two or more terms seperated by a boolean operation.
+                    Those operations are:
+                    AND: will return the set of documents where all the terms appear in
+                    OR:  will return the set of documents where either of the terms appear in
+                    NOT: will return the set of documents where terms on the left appear, but nothing from the terms on the right
+
+<h2>Exercise</h2>
+Finish all the todo's in the directory that you got (hint, look in the POM file for todo's too).  You can then use mvn assembly:single to create
+an executable jar which you should be able to run and test with.  Also we like to unit test here, so please add tests for your code.  You may add
+as many classes as you need to accomplish this task.
+
+Good luck!!!!
