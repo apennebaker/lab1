@@ -1,7 +1,15 @@
 package inveniet.query;
 
-public class Query
-{
+import inveniet.ingest.Ingester;
+
+import java.io.IOException;
+
+import java.util.Set;
+import java.util.HashSet;
+import java.util.List;
+import java.util.ArrayList;
+
+public class Query {
   /**
      * This will query the index and return the documents that match the query
      *
@@ -22,11 +30,11 @@ public class Query
      *        nothing is found.
      */
 
-  public Ingester i;
+  public Ingester ingester;
 
-  public Query(String directory) {
-    i = new Ingester();
-    i.ingestDirectory(directory);
+  public Query(String directory) throws IOException {
+    ingester = new Ingester();
+    ingester.ingestDirectory(directory);
   }
 
   private interface Expression {
@@ -38,11 +46,11 @@ public class Query
     private String term;
 
     public Term(String s) {
-      term = s;
+      term = Ingester.normalize(s);
     }
 
     public Set<String> reduce() {
-      return i.lookupTerm(term);
+      return ingester.index.lookupTerm(term);
     }
   }
 
@@ -101,7 +109,7 @@ public class Query
   }
 
   private interface LexedToken {
-    public String toString() {}
+    public String toString();
   }
 
   private class LexedTerm implements LexedToken {
@@ -116,12 +124,12 @@ public class Query
     }
   }
 
+  public static boolean isOp(String s) {
+    return s.equals("AND") || s.equals("OR") || s.equals("NOT");
+  }
+
   private class LexedOp implements LexedToken {
     private String op;
-
-    public static isOp(String s) {
-      return s == "AND" || s == "OR" || s == "NOT";
-    }
 
     public LexedOp(String s) {
       op = s;
@@ -137,12 +145,12 @@ public class Query
 
     // Invalid query
     if (parsedTokens.length % 2 == 0) {
-      return new Set();
+      return new HashSet();
     }
 
     ArrayList<LexedToken> lexedTokens = new ArrayList<LexedToken>();
     for (String parsedToken:parsedTokens) {
-      if (LexedOp.isOp(parsedToken)) {
+      if (Query.isOp(parsedToken)) {
         lexedTokens.add(new LexedOp(parsedToken));
       }
       else {
@@ -158,21 +166,21 @@ public class Query
 
     // Empty query
     if (e == null && size == 0) {
-      return new Set();
+      return new HashSet();
     }
     // Single term or invalid query
     else if (e == null && size == 1) {
       LexedToken token = tokens.get(0);
-      if (token.getClass() == LexedOp) {
-        return new Set();
+      if (token instanceof LexedOp) {
+        return new HashSet();
       }
       else {
-        return new Expression(token.toString()).reduce();
+        return new Term(token.toString()).reduce();
       }
     }
     // Invalid query
     else if (e == null && size == 2) {
-      return new Set();
+      return new HashSet();
     }
     // Start of Boolean query, or invalid query
     else if (e == null && size > 2) {
@@ -181,10 +189,10 @@ public class Query
       LexedToken tok3 = tokens.get(2);
 
       // Invalid query
-      if (tok1.getClass() == LexedOp ||
-          tok2.getClass() == LexedTerm ||
-          tok3.getClass() == LexedOp) {
-        return new Set();
+      if (tok1.getClass() == LexedOp.class ||
+          tok2.getClass() == LexedTerm.class ||
+          tok3.getClass() == LexedOp.class) {
+        return new HashSet();
       }
       else {
         String parsedTermX = tok1.toString();
@@ -194,17 +202,17 @@ public class Query
         Term termX = new Term(parsedTermX);
         Term termY = new Term(parsedTermY);
 
-        if (op == "AND") {
+        if (op.equals("AND")) {
           e = new Intersection(termX, termY);
         }
-        else if (op == "OR") {
+        else if (op.equals("OR")) {
           e = new Union(termX, termY);
         }
         else {
           e = new Negation(termX, termY);
         }
 
-        List rest = tokens.subList(3, size - 3);
+        List rest = tokens.subList(3, size);
 
         return query(e, rest);
       }
@@ -215,7 +223,7 @@ public class Query
     }
     // Invalid continuation of Boolean query
     else if (e != null && size == 1) {
-      return new Set();
+      return new HashSet();
     }
     // Continuation of Boolean query, or invalid query
     else if (e != null && size >= 2) {
@@ -223,8 +231,9 @@ public class Query
       LexedToken tok2 = tokens.get(1);
 
       // Invalid query
-      if (tok1.getClass() == LexedTerm || tok2.getClass() == LexedOp) {
-        return new Set();
+      if (tok1.getClass() == LexedTerm.class ||
+          tok2.getClass() == LexedOp.class) {
+        return new HashSet();
       }
       else {
         String parsedOp = tok1.toString();
@@ -234,19 +243,24 @@ public class Query
 
         Expression expX = e;
 
-        if (parsedOp == "AND") {
+        if (parsedOp.equals("AND")) {
           e = new Intersection(expX, termY);
         }
-        else if (parsedOp == "OR") {
+        else if (parsedOp.equals("OR")) {
           e = new Union(expX, termY);
         }
-        else if (parsedOp == "NOT") {
+        else if (parsedOp.equals("NOT")) {
           e = new Negation(expX, termY);
         }
 
-        List rest = tokens.subList(2, size - 2);
+        List rest = tokens.subList(2, size);
 
         return query(e, rest);
+      }
+    }
+    // ? How did you get here ?
+    else {
+      return new HashSet();
     }
   }
 }

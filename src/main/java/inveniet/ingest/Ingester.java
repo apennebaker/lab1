@@ -65,7 +65,7 @@ public class Ingester
         String[] words = line.split("\\s+");
 
         for (String word:words) {
-          String normalized = normalize(word);
+          String normalized = Ingester.normalize(word);
           
           index.addTerm(normalized, filename);
         }
@@ -77,7 +77,7 @@ public class Ingester
   /**
      * Poor mans version of normalizing a string (lower case and remove spaces)
      */
-  private String normalize(final String str)
+  public static String normalize(final String str)
   {
     return str.toLowerCase().trim();
   } 

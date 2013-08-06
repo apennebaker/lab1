@@ -1,5 +1,7 @@
 package inveniet.ingest;
 
+import inveniet.index.MemoryIndex;
+
 import com.google.common.collect.ImmutableSet;
 import java.util.Set;
 import java.util.Map;
@@ -8,8 +10,28 @@ import java.util.HashSet;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.After;
 
 public class IngesterTest {
+  @Test
+  public void normalizeTest() {
+    Assert.assertEquals(Ingester.normalize("abc"), "abc");
+
+    Assert.assertEquals(Ingester.normalize("ABC"), "abc");
+
+    Assert.assertEquals(Ingester.normalize("aBC"), "abc");
+
+    Assert.assertEquals(Ingester.normalize(""), "");
+
+    Assert.assertEquals(Ingester.normalize("abc "), "abc");
+
+    Assert.assertEquals(Ingester.normalize(" abc"), "abc");
+
+    Assert.assertEquals(Ingester.normalize(" abc "), "abc");
+
+    Assert.assertEquals(Ingester.normalize(" ABc "), "abc");
+  }
+
   @Test
   public void basicTest() throws Exception {
     Ingester i = new Ingester();
@@ -39,6 +61,6 @@ public class IngesterTest {
 
   @After
   public void cleanIndex() {
-    i.clear();
+    MemoryIndex.getInstance().clear();
   }
 }
