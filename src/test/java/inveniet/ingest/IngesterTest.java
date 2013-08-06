@@ -36,4 +36,9 @@ public class IngesterTest {
     Set<String> macbethDocs = i.index.lookupTerm("macbeth");
     Assert.assertEquals(macbethDocs.size(), 2);
   }
+
+  @After
+  public void cleanIndex() {
+    i.clear();
+  }
 }
